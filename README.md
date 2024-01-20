@@ -1,10 +1,10 @@
 # Slapo Artifact
 
-This repository contains scripts for setting up environments and reproducing results presented in the ASPLOS 2024 paper entitled [Slapo: A Schedule Language for Progressive Optimization of Large Deep Learning Model Training](https://dl.acm.org/doi/10.1145/3582016.3582047). To access the core implementation of Slapo, please visit the [Slapo repository](https://github.com/awslabs/slapo). Additionally, we have documentation and tutorials on the [Slapo language](https://awslabs.github.io/slapo/). Please take a look if you are interested.
+This repository contains scripts for setting up environments and reproducing results presented in the ASPLOS 2024 paper entitled [Slapo: A Schedule Language for Progressive Optimization of Large Deep Learning Model Training](https://arxiv.org/abs/2302.08005). If you wish to access the core implementation of Slapo, please refer to the [Slapo repository](https://github.com/awslabs/slapo). Moreover, comprehensive documentation and tutorials for the Slapo language can be found [here](https://awslabs.github.io/slapo/); we encourage you to explore these resources if you are interested using Slapo for more deep learning models.
 
-As our experiment requires a machine with 8xV100 GPUs, we provide an AWS [p3dn.24xlarge](https://aws.amazon.com/ec2/instance-types/p3/) EC2 instance for the reviewers to reproduce our results. Please contact the authors for access.
+As our experiment requires a machine with 8 x V100 GPUs, we provide an AWS [p3dn.24xlarge](https://aws.amazon.com/ec2/instance-types/p3/) EC2 instance for the AE reviewers to reproduce our results. Please contact the authors for the server access.
 
-For AE reviewers, please directly go to the [Clone-the-Repository](#clone-the-repository) section and the [Kick-the-Tires](#kick-the-tires) section to run the pre-built docker image.
+In the following, we detail the steps to prepare the environment and reproduce the results. For the AE reviewers, please directly go to the [Clone-the-Repository](#clone-the-repository) section and the [Kick-the-Tires](#kick-the-tires) section to run the pre-built docker image on our server.
 
 ## Prerequisite
 
@@ -70,14 +70,14 @@ SKIPPED [1] tests/test_shard.py:275: Flaky test
 ========================================================================= 56 passed, 1 skipped, 18 warnings in 16.83s ==========================================================================
 ```
 
-## Run Experiments (Est. Time: 2.5 hours)
+## Run Experiments (Est. Time: 3 hours)
 
 Below is the script to reproduce experiments in Slapo paper, each script would emit logging files and figures in pdf format.
 
 We only provide scripts for reproducing the results of **Figure 7**, **Table 4**, and **Figure 9**, which constructs the main conclusion of our paper. For other experiments, since it may need multiple machines or take excessively long time to run, we do not provide end-to-end evaluation scripts, but users can still find the instructions in the folder.
 
 
-### Figure 7 (Est. Time: 2 hours)
+### Figure 7 (Est. Time: 2.5 hours)
 > Conclusion: Either Slapo-TP or Slapo-ZeRO3 can achieve the best performance among all the baselines.
 
 We recommend using `tmux` to run the experiment in the background. Please make sure that when you launch the experiment, there are no other users using GPUs. You can check by typing `nvidia-smi`.
@@ -85,9 +85,10 @@ We recommend using `tmux` to run the experiment in the background. Please make s
 Some of the experiments may run into out-of-memory (OOM) issue due to the dynamic memory allocation nature of the baseline systems. Please rerun the experiment or reduce the batch size if it happens.
 
 ```bash
-# Run single-node end-to-end experiments
-docker run -it --gpus all -v $(pwd)/spmm/:/root/spmm sparsetir /bin/bash -c 'cd spmm && bash run.sh'
+docker run -it --gpus all --shm-size=150G -v $(pwd)/end2end/:/home/deepspeed/slapo/benchmark/configs slapo /bin/bash -c 'cd /home/deepspeed/slapo/benchmark && cp configs/run.sh run.sh && bash run.sh'
 ```
+
+Check the `end2end/single_node_v100_1b.pdf` figure.
 
 ### Table 4 (Est. Time: 1 min)
 > Conclusion: Users can write a few lines of schedule code to optimize model training.
@@ -108,16 +109,18 @@ bert.schedule: 21
 gpt.schedule: 10
 ```
 
-### Figure 9 (Est. Time: 5 mins)
-> Conclusion: Users can leverage Slapo to progressively optimize the model performance.
+### Figure 9 (Est. Time: 10 mins)
+> Conclusion: Users can leverage Slapo to *progressively* optimize the model performance.
 
 ```bash
 docker run -it --gpus all --shm-size=150G -v $(pwd)/ablation/:/home/deepspeed/slapo/benchmark/script slapo /bin/bash -c 'cd /home/deepspeed/slapo/benchmark/script && bash run.sh'
 ```
 
+Check the `ablation/ablation-1b.pdf` figure.
+
 
 ### Figure 8 (Not for AE)
-This experiment requires 8 x p3dn instances to evaluate the GPT-10B and LLaMA-7B models, and thus is not for artifact evaluation. The corresponding scripts are listed below:
+This experiment requires 8 x p3dn instances (64 x V100 GPUs) to evaluate the GPT-10B and LLaMA-7B models, and thus is not for artifact evaluation. The corresponding scripts are listed below:
 
 * [GPT-10B](https://github.com/chhzh123/slapo/blob/asplos24/examples/gpt2/run.sh)
 * [LLaMA-7B](https://github.com/chhzh123/slapo/blob/asplos24/examples/llama/run.sh)
