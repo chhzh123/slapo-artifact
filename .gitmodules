@@ -1,0 +1,25 @@
+[submodule "3rdparty/slapo"]
+	path = 3rdparty/slapo
+	url = https://github.com/chhzh123/slapo.git
+	branch = asplos24
+[submodule "3rdparty/DeepSpeed"]
+	path = 3rdparty/DeepSpeed
+	url = https://github.com/dmlc/DeepSpeed.git
+	branch = pipe
+[submodule "3rdparty/apex"]
+	path = 3rdparty/apex
+	url = https://github.com/NVIDIA/apex
+[submodule "3rdparty/Megatron-LM"]
+	path = 3rdparty/Megatron-LM
+	url = https://github.com/chhzh123/Megatron-LM.git
+	branch = slapo
+[submodule "3rdparty/transformers"]
+	path = 3rdparty/transformers
+	url = https://github.com/chhzh123/transformers.git
+	branch = slapo
+[submodule "3rdparty/flash-attention"]
+	path = 3rdparty/flash-attention
+	url = https://github.com/jfc4050/flash-attention.git
+[submodule "3rdparty/xformers"]
+	path = 3rdparty/xformers
+	url = https://github.com/facebookresearch/xformers.git
