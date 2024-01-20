@@ -1,6 +1,9 @@
 # Slapo Artifact
 
-This repository contains scripts for setting up environments and reproducing results presented in the ASPLOS 2024 paper entitled [Slapo: A Schedule Language for Progressive Optimization of Large Deep Learning Model Training](https://arxiv.org/abs/2302.08005). If you wish to access the core implementation of Slapo, please refer to the [Slapo repository](https://github.com/awslabs/slapo). Moreover, comprehensive documentation and tutorials for the Slapo language can be found [here](https://awslabs.github.io/slapo/); we encourage you to explore these resources if you are interested using Slapo for more deep learning models.
+This repository contains scripts for setting up environments and reproducing results presented in the ASPLOS 2024 paper entitled [Slapo: A Schedule Language for Progressive Optimization of Large Deep Learning Model Training](https://arxiv.org/abs/2302.08005). If you wish to access the core implementation, documentation, and tutorials for the Slapo language, please refer to the following links. We encourage you to explore these resources if you are interested using Slapo for training other deep learning models that are not presented in our paper.
+
+* Slapo repository: <https://github.com/awslabs/slapo>
+* Slapo documentation: <https://awslabs.github.io/slapo/>
 
 As our experiment requires a machine with 8 x V100 GPUs, we provide an AWS [p3dn.24xlarge](https://aws.amazon.com/ec2/instance-types/p3/) EC2 instance for the AE reviewers to reproduce our results. Please contact the authors for the server access.
 
@@ -8,7 +11,7 @@ In the following, we detail the steps to prepare the environment and reproduce t
 
 ## Prerequisite
 
-We require NVIDIA Container Toolkit to setup environments, please follow instructions from [installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html), below is the installation script for Debian/Ubuntu (extracted from official guide):
+We require NVIDIA Container Toolkit to setup environments, please follow instructions from the [installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html), below is the installation script for Ubuntu (extracted from official guide):
 
 ```bash
 curl https://get.docker.com | sh && sudo systemctl --now enable docker
@@ -26,12 +29,9 @@ sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
 ```
 
-User can try the following command to test whether the installation was successful or not:
-```bash
-docker run --rm --runtime=nvidia --gpus all nvidia/cuda:11.6.2-base-ubuntu20.04 nvidia-smi
-```
-
 ## Clone the Repository
+
+Please clone the repository with the `--recursive` flag to include the submodules.
 
 ```bash
 git clone https://github.com/chhzh123/slapo-artifact.git --recursive
@@ -39,6 +39,8 @@ cd slapo-artifact
 ```
 
 ## Setup Docker Image
+
+We have already built the docker on our server, so the AE reviewers do *not* need to build the docker image again.
 
 ### Pull from Docker Hub
 
@@ -50,19 +52,19 @@ docker tag chhzh123/slapo-ae:latest slapo
 
 ### Build from source
 
-After these steps, user can run the following command to build docker container. It will take about 2 hours to build the docker image.
+After these steps, user can run the following command to build docker container. It will take about 2 hours to build the docker image. The docker image contains the necessary environment, libraries, source code, and datasets for reproducing the results.
 ```bash
-docker build -t slapo .
+docker build -t slapo -f docker/Dockerfile .
 ```
 
 ## Kick-the-Tires (Est. Time: 3 mins)
 
-We will run some basic tests on the artifact to make sure the environment is set up correctly. User can run the following command to enter the docker container:
+We will run some basic tests on the artifact to make sure the environment is set up correctly. User can run the following command to run the unit tests using 2 GPUs:
 ```bash
 docker run -it --gpus all slapo /bin/bash -c 'cd /home/deepspeed/slapo && torchrun --nproc_per_node 2 -r 1:1 -m pytest -rxXs -p "no:randomly" tests'
 ```
 
-You should see the following output.
+You are expected to see the following output.
 
 ```
 =================================================================================== short test summary info ====================================================================================
@@ -97,7 +99,7 @@ Check the `end2end/single_node_v100_1b.pdf` figure.
 docker run -it -v $(pwd)/usability/:/home/deepspeed/slapo/usability/script slapo /bin/bash -c 'cd /home/deepspeed/slapo/usability/script && python3 loc.py ../'
 ```
 
-The lines of code (LoC) count is shown below.
+The lines of code (LoC) count is output to the terminal.
 
 ```
 wideresnet.schedule: 12
@@ -133,7 +135,18 @@ For the usage of autotuner, please refer to [tune_cfg.py](https://github.com/chh
 
 
 ## Further customization
-Please refer to the Slapo [documentation]() for the usage of Slapo.
+
+### End-to-end Evaluation
+
+Modify the script.
+
+
+### Tutorials
+Please refer to the Slapo [documentation](https://awslabs.github.io/slapo/) for the usage of Slapo.
+
+
+## More information
+For AE reviewers, please contact the authors through HotCRP for any questions. For other users, please open an [issue](https://github.com/chhzh123/slapo-artifact/issues) publicly or contact [chhzh123](mailto:hzchen@cs.cornell.edu) for any techinical questions.
 
 
 ## Reference
