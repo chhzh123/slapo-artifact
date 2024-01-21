@@ -1,17 +1,17 @@
 # Slapo Artifact
 
-This repository contains scripts for setting up environments and reproducing results presented in the ASPLOS 2024 paper entitled [Slapo: A Schedule Language for Progressive Optimization of Large Deep Learning Model Training](https://arxiv.org/abs/2302.08005). If you wish to access the core implementation, documentation, and tutorials for the Slapo language, please refer to the following links. We encourage you to explore these resources if you are interested using Slapo for training other deep learning models that are not presented in our paper.
+This repository contains scripts for setting up environments and reproducing results presented in the ASPLOS 2024 paper entitled [Slapo: A Schedule Language for Progressive Optimization of Large Deep Learning Model Training](https://arxiv.org/abs/2302.08005). If you wish to access the core implementation, documentation, and tutorials for the Slapo language, please refer to the following links. We encourage you to explore these resources if you are interested in using Slapo for training other deep learning models that are not presented in our paper.
 
 * Slapo repository: <https://github.com/awslabs/slapo>
 * Slapo documentation: <https://awslabs.github.io/slapo/>
 
-As our experiment requires a machine with 8 x V100 GPUs, we provide an AWS [p3dn.24xlarge](https://aws.amazon.com/ec2/instance-types/p3/) EC2 instance for the AE reviewers to reproduce our results. Please contact the authors for the server access.
+As our experiment requires a machine with 8 x V100 GPUs, we provide an AWS [p3dn.24xlarge](https://aws.amazon.com/ec2/instance-types/p3/) EC2 instance for the AE reviewers to reproduce our results. Please contact the authors for server access.
 
 In the following, we detail the steps to prepare the environment and reproduce the results. For the AE reviewers, please directly go to the [Clone-the-Repository](#clone-the-repository) section and the [Kick-the-Tires](#kick-the-tires) section to run the pre-built docker image on our server.
 
 ## Prerequisite
 
-We require NVIDIA Container Toolkit to setup environments, please follow instructions from the [installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html). For convenience, we also provide the installation script below (extracted from official guide):
+We require the NVIDIA Container Toolkit to set up environments, please follow instructions from the [installation guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html). For convenience, we also provide the installation script below (extracted from official guide):
 
 ```bash
 curl https://get.docker.com | sh && sudo systemctl --now enable docker
@@ -44,7 +44,7 @@ We have already built the docker on our server, so the AE reviewers do *not* nee
 
 ### Pull from Docker Hub
 
-We provide a pre-built docker image available on Docker Hub which is compatible with NVIDIA GPUs with CUDA 11.7 installed, user can pull it with:
+We provide a pre-built docker image available on Docker Hub which is compatible with NVIDIA V100 GPUs with CUDA 11.7 installed, user can pull it with:
 ```bash
 docker image pull chhzh123/slapo-ae:latest
 docker tag chhzh123/slapo-ae:latest slapo
@@ -52,7 +52,7 @@ docker tag chhzh123/slapo-ae:latest slapo
 
 ### Build from source
 
-Otherwise, users can run the following command to build docker container. It will take about **2 hours** to build the docker image. The docker image contains the necessary environment, libraries, source code, and datasets for reproducing the results.
+Otherwise, users can run the following command to build the docker container. It will take about **2 hours** to build the docker image. The docker image contains the necessary environment, libraries, source code, and datasets for reproducing the results.
 ```bash
 cd 3rdparty/slapo/docker
 docker build -t slapo -f docker/Dockerfile .
@@ -77,7 +77,7 @@ SKIPPED [1] tests/test_shard.py:275: Flaky test
 
 Below is the script to reproduce experiments in Slapo paper. Each script will emit logging files and figures in pdf format.
 
-We only provide scripts for reproducing the results of **Figure 7**, **Table 4**, and **Figure 9**, which constructs the main conclusion of our paper. For other experiments, since they may require multiple machines or take excessively long time to run, we do not provide end-to-end evaluation scripts, but users can still find the instructions in our repository.
+We only provide scripts for reproducing the results of **Figure 7**, **Table 4**, and **Figure 9**, which construct the main conclusion of our paper. For other experiments, since they may require multiple machines or take excessively long time to run, we do not provide end-to-end evaluation scripts, but users can still find the instructions in our repository.
 
 
 ### Figure 7 (Est. Time: 2.5 hours)
@@ -91,7 +91,7 @@ docker run -it --gpus all --shm-size=150G -v $(pwd)/end2end/:/home/deepspeed/sla
 
 Please check the `end2end/single_node_v100_1b.pdf` figure.
 
-Note: Some of the experiments may run into out-of-memory (OOM) issue due to the dynamic memory allocation nature of the baseline systems. Please rerun the experiment or reduce the batch size if it happens. Also, some baseline systems (e.g., Megatron-LM and DeepSpeed) may have better performance than the ones presented in the paper due to the recent updates of their systems, but the above conclusion should still hold.
+Note: Some of the experiments may run into out-of-memory (OOM) issues due to the dynamic memory allocation nature of the baseline systems. Please rerun the experiment or reduce the batch size if it happens. Also, some baseline systems (e.g., Megatron-LM and DeepSpeed) may have better performance than the ones presented in the paper due to the recent updates of their systems, but the above conclusion should still hold.
 
 
 ### Table 4 (Est. Time: 1 min)
@@ -142,7 +142,7 @@ For the usage of autotuner, please refer to [tune_cfg.py](https://github.com/chh
 
 ## Further Customization
 
-The Slapo language and the artifact can be further customized for running more models or different settings.
+The Slapo language and the artifact can be further customized for running diverse models and configurations.
 
 ### End-to-end Evaluation
 You can run this artifact using your own machine once you have the GPU environment set up. For example, if you only have one GPU on your machine and still want to try out Slapo, you can still modify the benchmarking script to run the experiment.
@@ -156,9 +156,9 @@ MODE MODEL GPUS SEQ_LEN DEC_SEQ_LEN BATCH_SIZE CKPT
 * `MODE`: megatron, slapo-megatron, deepspeed, or slapo-deepspeed
 * `MODEL`: HuggingFace model name (e.g., bert-large-uncased)
 * `GPUS`: Number of GPUs (e.g., pow2, or 2,4,8)
-* `SEQ_LEN`: Sequence length. In encoder-decoder model, this is the encoder length.
+* `SEQ_LEN`: Sequence length. In the encoder-decoder model, this is the encoder length.
 * `DEC_SEQ_LEN`: The decoder length. This is only used by encoder-decoder models.
-* `BATCH_SIZE`: An expression that inputs GPU number and outputs batch size (e.g., "16*n" means batch size 16, 32, 64, 128 respecting to GPU number 1, 2, 4, 8).
+* `BATCH_SIZE`: An expression that inputs GPU number and outputs batch size (e.g., "16*n" means batch size 16, 32, 64, 128 respecting GPU number 1, 2, 4, 8).
 * `CKPT`: Activation checkpointing. In Megatron it would be full or selective. In Slapo it is a floating point indicating the checkpoint ratio (e.g., 1.0 means full).
 
 For example, if you only have one GPU and want to run the BERT-large model using Slapo-TP with batch size 16 and sequence length 512, you can write the following line in the config file named `end2end/test.cfg`.
@@ -171,7 +171,7 @@ And then launch the docker in the root folder:
 docker run -it --gpus all --shm-size=150G -v $(pwd)/end2end/:/home/deepspeed/slapo/benchmark/configs slapo /bin/bash -c 'cd /home/deepspeed/slapo/benchmark && cp configs/test.cfg test.cfg && bash run_all_single_node.sh configs/test.cfg'
 ```
 
-The output will be displayed in the terminal. Our script makes the artifact more reusable for different models and hardware enviroments.
+The output will be displayed in the terminal. Our script makes the artifact more reusable for different models and hardware environments.
 
 
 ### Tutorials
@@ -179,7 +179,7 @@ We also provide detailed documentation and tutorials for users who are intereste
 
 
 ## More information
-For AE reviewers, please contact the authors through [HotCRP](https://asplos24aec-summer.hotcrp.com/) for any questions. For other users, please open an [issue](https://github.com/chhzh123/slapo-artifact/issues) publicly or contact [chhzh123](mailto:hzchen@cs.cornell.edu) for any techinical questions.
+For AE reviewers, please contact the authors through [HotCRP](https://asplos24aec-summer.hotcrp.com/) for any questions. For other users, please open an [issue](https://github.com/chhzh123/slapo-artifact/issues) publicly or contact [chhzh123](mailto:hzchen@cs.cornell.edu) for any technical questions.
 
 Please cite our paper if you use Slapo for your research.
 ```bibtex
