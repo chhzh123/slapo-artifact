@@ -161,11 +161,18 @@ MODE MODEL GPUS SEQ_LEN DEC_SEQ_LEN BATCH_SIZE CKPT
 * `BATCH_SIZE`: An expression that inputs GPU number and outputs batch size (e.g., "16*n" means batch size 16, 32, 64, 128 respecting to GPU number 1, 2, 4, 8).
 * `CKPT`: Activation checkpointing. In Megatron it would be full or selective. In Slapo it is a floating point indicating the checkpoint ratio (e.g., 1.0 means full).
 
-The following command runs both Megatron-LM and HuggingFace models with Megatron framework on up to 8 V100 GPUs. The batch size and sequence length are configured for each model.
-
-```bash
-bash run_all_single_node.sh configs/singe_node_v100.cfg
+For example, if you only have one GPU and want to run the BERT-large model using Slapo-TP with batch size 16 and sequence length 512, you can write the following line in the config file named `end2end/test.cfg`.
 ```
+slapo-megatron bert-large-uncased 1 512 0 16 0
+```
+
+And then launch the docker in the root folder:
+```bash
+docker run -it --gpus all --shm-size=150G -v $(pwd)/end2end/:/home/deepspeed/slapo/benchmark/configs slapo /bin/bash -c 'cd /home/deepspeed/slapo/benchmark && cp configs/test.cfg test.cfg && bash run_all_single_node.sh configs/test.cfg'
+```
+
+The output will be displayed in the terminal. Our script makes the artifact more reusable for different models and hardware enviroments.
+
 
 ### Tutorials
 We also provide detailed documentation and tutorials for users who are interested in using Slapo for training other deep learning models. Please refer to this [webpage](https://awslabs.github.io/slapo/) for more information.
