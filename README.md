@@ -188,8 +188,8 @@ Please cite our paper if you use Slapo for your research.
 @inproceedings{chen2024slapo,
       title={Slapo: A Schedule Language for Progressive Optimization of Large Deep Learning Model Training}, 
       author={Hongzheng Chen and Cody Hao Yu and Shuai Zheng and Zhen Zhang and Zhiru Zhang and Yida Wang},
-      year={2024},
       booktitle={Proceedings of the ACM International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS)},
+      year={2024},
 }
 ```
 
