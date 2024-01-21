@@ -1,5 +1,7 @@
 # Slapo Artifact
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10546708.svg)](https://doi.org/10.5281/zenodo.10546708)
+
 This repository contains scripts for setting up environments and reproducing results presented in the ASPLOS 2024 paper entitled [Slapo: A Schedule Language for Progressive Optimization of Large Deep Learning Model Training](https://arxiv.org/abs/2302.08005). If you wish to access the core implementation, documentation, and tutorials for the Slapo language, please refer to the following links. We encourage you to explore these resources if you are interested in using Slapo for training other deep learning models that are not presented in our paper.
 
 * Slapo repository: <https://github.com/awslabs/slapo>
