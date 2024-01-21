@@ -7,7 +7,7 @@ This repository contains scripts for setting up environments and reproducing res
 
 As our experiment requires a machine with 8 x V100 GPUs, we provide an AWS [p3dn.24xlarge](https://aws.amazon.com/ec2/instance-types/p3/) EC2 instance for the AE reviewers to reproduce our results. Please contact the authors for server access.
 
-In the following, we detail the steps to prepare the environment and reproduce the results. For the AE reviewers, please directly go to the [Clone-the-Repository](#clone-the-repository) section and the [Kick-the-Tires](#kick-the-tires) section to run the pre-built docker image on our server.
+In the following, we detail the steps to prepare the environment and reproduce the results. **For the AE reviewers, please directly go to the [Clone-the-Repository](#clone-the-repository) section and the [Kick-the-Tires](#kick-the-tires) section to run the pre-built docker image on our server.**
 
 ## Prerequisite
 
